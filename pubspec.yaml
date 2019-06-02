@@ -1,0 +1,17 @@
+name: netease_music_api
+version: 1.0.0
+author: "-"
+homepage: http://github.com/boyan01/NeteaseCloudMusicApi
+description: netease music api
+
+environment:
+  sdk: ">=2.0.0 <3.0.0"
+
+dependencies:
+  async: ">=1.10.0 <3.0.0"
+  path: ">=0.9.0 <2.0.0"
+  pedantic: "^1.0.0"
+  encrypt: ^3.0.0
+
+dev_dependencies:
+  test: ^1.3.0
