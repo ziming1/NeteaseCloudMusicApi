@@ -114,7 +114,7 @@ Handler user_playlist = (query, cookie) {
       'POST',
       'https://music.163.com/weapi/user/playlist',
       {
-        'userId': query['uid'],
+        'uid': query['uid'],
         'limit': query['limit'] ?? 30,
         'offset': query['offset'] ?? 0,
       },

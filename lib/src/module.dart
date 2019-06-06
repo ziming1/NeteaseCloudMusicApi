@@ -72,7 +72,7 @@ final handles = <String, Handler>{
   "/comment/playlist": comment_playlist,
   "/comment/video": comment_video,
   "/comment": comment,
-  "/daily/signin": daily_signin,
+  "/daily_signin": daily_signin,
   "/digitalAlbum/purchased": digitalAlbum_purchased,
   "/dj/banner": dj_banner,
   "/dj/category/excludehot": dj_category_excludehot,
