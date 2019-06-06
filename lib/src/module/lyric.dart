@@ -5,5 +5,5 @@ Handler lyric = (query, cookie) {
   final data = {'id': query['id']};
   return request(
       'POST', 'https://music.163.com/weapi/song/lyric?lv=-1&kv=-1&tv=-1', data,
-      crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
+      crypto: Crypto.linuxapi, cookies: cookie, ua: 'pc');
 };

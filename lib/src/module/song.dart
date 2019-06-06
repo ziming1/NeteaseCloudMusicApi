@@ -33,7 +33,13 @@ Handler song_url = (query, cookie) {
     cookie.add(Cookie('_ntes_nuid', _createdSecretKey()));
   }
 
-  return request('POST', 'https://music.163.com/weapi/song/enhance/player/url',
-      {'ids': '[' + query['id'] + ']', 'br': int.parse(query['br'] ?? 999000)},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request(
+      'POST',
+      'https://music.163.com/weapi/song/enhance/player/url',
+      {
+        'ids': '[${query['id']}]',
+        'br': int.parse(query['br'] ?? '999000'),
+      },
+      crypto: Crypto.weapi,
+      cookies: cookie);
 };

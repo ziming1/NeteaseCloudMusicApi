@@ -110,13 +110,15 @@ Future<Answer> request(
 
   HttpClient().openUrl(method, Uri.parse(url)).then((request) {
     headers.forEach(request.headers.add);
-    request.write(Uri(queryParameters: data).query);
+    request.write(Uri(queryParameters: data.cast()).query);
     return request.close();
   }).then((response) async {
     var ans = Answer(cookie: response.cookies);
     final content = await response.transform(utf8.decoder).join();
     final body = json.decode(content);
-    ans = ans.copy(status: body['code'] ?? response.statusCode, body: body);
+    ans = ans.copy(
+        status: int.parse(body['code'].toString()) ?? response.statusCode,
+        body: body);
 
     ans = ans.copy(
         status: ans.status > 100 && ans.status < 600 ? ans.status : 400);

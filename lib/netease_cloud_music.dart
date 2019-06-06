@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,8 +12,8 @@ DebugPrinter debugPrint = (msg) {
   print(msg);
 };
 
-void startServer({address = "localhost", int port = 3000}) {
-  HttpServer.bind(address, port).then((server) {
+Future<HttpServer> startServer({address = "localhost", int port = 3000}) {
+  return HttpServer.bind(address, port).then((server) {
     debugPrint("start listen at: http://$address:$port");
     server.listen((request) {
       debugPrint("request : ${request.uri}");
@@ -26,7 +27,13 @@ void _handleRequest(HttpRequest request) async {
 
   Answer answer;
   if (handle != null) {
-    answer = await handle(request.uri.queryParameters, request.cookies);
+    try {
+      answer = await handle(request.uri.queryParameters, request.cookies);
+    } catch (e, stack) {
+      debugPrint(e.toString());
+      debugPrint(stack.toString());
+      answer = Answer();
+    }
   }
   answer ??= Answer();
   request.response.statusCode = answer.status;

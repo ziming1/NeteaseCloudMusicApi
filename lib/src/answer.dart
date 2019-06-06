@@ -5,7 +5,10 @@ class Answer {
   final Map body;
   final List<Cookie> cookie;
 
-  Answer({this.status = 500, this.body = const {}, this.cookie = const []});
+  Answer(
+      {this.status = 500,
+      this.body = const {'code': 500, 'msg': 'server error'},
+      this.cookie = const []});
 
   Answer copy({int status, Map body, List cookie}) {
     return Answer(
