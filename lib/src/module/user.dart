@@ -128,7 +128,7 @@ Handler user_record = (query, cookie) {
       'POST',
       'https://music.163.com/weapi/v1/play/record',
       {
-        'userId': query['uid'],
+        'uid': query['uid'],
         'type': query['type'] ?? 1 // 1: 最近一周, 0: 所有时间
       },
       crypto: Crypto.weapi,
