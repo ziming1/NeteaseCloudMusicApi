@@ -54,7 +54,7 @@ Handler simi_user = (query, cookie) {
       'POST',
       'https://music.163.com/weapi/discovery/simiUser',
       {
-        'userid': query['id'],
+        'songid': query['id'],
         'limit': query['limit'] ?? 50,
         'offset': query['offset'] ?? 0
       },
