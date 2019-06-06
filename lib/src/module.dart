@@ -29,6 +29,8 @@ part 'module/login.dart';
 part 'module/lyric.dart';
 part 'module/msg.dart';
 part 'module/mv.dart';
+part 'module/personal.dart';
+part 'module/playlist.dart';
 
 typedef Handler = Future<Answer> Function(Map query, List<Cookie> cookie);
 
