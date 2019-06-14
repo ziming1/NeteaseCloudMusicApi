@@ -2,10 +2,9 @@ part of '../module.dart';
 
 // 红心与取消红心歌曲
 Handler like = (query, cookie) {
-  query['like'] = query['like'] == 'false' ? false : true;
   final data = {
     'trackId': query['id'],
-    'like': query['like'],
+    'like': query['like'] == 'false' ? false : true,
   };
   return request(
       'POST',
