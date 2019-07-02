@@ -88,7 +88,7 @@ Handler user_followeds = (query, cookie) {
       {
         'userId': query['uid'],
         'limit': query['limit'] ?? 30,
-        'offset': query['offset'] ?? 0,
+        'time': query['lasttime '] ?? -1,
       },
       crypto: Crypto.weapi,
       cookies: cookie);
