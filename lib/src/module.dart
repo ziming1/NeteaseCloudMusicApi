@@ -99,6 +99,8 @@ final handles = <String, Handler>{
   "/login/refresh": login_refresh,
   "/login": login,
   "/logout": logout,
+  "/cellphone/existence/check": cellphone_existence_check,
+  "/activate/init/profile": activate_init_profile,
   "/lyric": lyric,
   "/msg/comment": msg_comment,
   "/msg/forwards": msg_forwards,

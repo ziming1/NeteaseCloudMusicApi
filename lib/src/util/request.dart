@@ -40,6 +40,98 @@ String _chooseUserAgent({String ua}) {
   return userAgentList[index];
 }
 
+Map<String, String> _buildHeader(
+    String url, String ua, String method, List<Cookie> cookies) {
+  final headers = {'User-Agent': _chooseUserAgent(ua: ua)};
+  if (method.toUpperCase() == 'POST')
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  if (url.contains('music.163.com'))
+    headers['Referer'] = 'https://music.163.com';
+  headers['Cookie'] = cookies.join("; ");
+  return headers;
+}
+
+Future<Answer> eapiRequest(
+  String url,
+  String optionUrl,
+  Map data, {
+  List<Cookie> cookies = const [],
+  String ua,
+  String method = 'POST',
+}) {
+  final headers = _buildHeader(url, ua, method, cookies);
+
+  final cookie = Map.fromIterable(
+    cookies,
+    key: (item) => item.name,
+    value: (item) => item.value,
+  );
+  final csrfToken = cookie['__csrf'] ?? '';
+  final header = {
+    //系统版本
+    "osver": cookie['osver'],
+    //encrypt.base64.encode(imei + '\t02:00:00:00:00:00\t5106025eb79a5247\t70ffbaac7')
+    "deviceId": cookie['deviceId'],
+    // app版本
+    "appver": cookie['appver'] ?? "6.1.1",
+    //版本号
+    "versioncode": cookie['versioncode'] ?? "140",
+    //设备model
+    "mobilename": cookie['mobilename'],
+    "buildver": cookie['buildver'] ??
+        (DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)),
+    //设备分辨率
+    "resolution": cookie['resolution'] ?? "1920x1080",
+    "__csrf": csrfToken,
+    "os": cookie['os'] ?? 'android',
+    "channel": cookie['channel'],
+    "requestId":
+        '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000).toString().padLeft(4, '0')}'
+  };
+  if (cookie['MUSIC_U'] != null) header["MUSIC_U"] = cookie['MUSIC_U'];
+  if (cookie['MUSIC_A'] != null) header["MUSIC_A"] = cookie['MUSIC_A'];
+  headers['Cookie'] = header.keys
+      .map((key) =>
+          '${Uri.encodeComponent(key)}=${Uri.encodeComponent(header[key] ?? '')}')
+      .join('; ');
+
+  data['header'] = header;
+  data = eapi(optionUrl, data);
+  url = url.replaceAll(RegExp(r"\w*api"), 'eapi');
+
+  return _doRequest(url, headers, data, method).then((response) async {
+    final bytes = await response.expand((e) => e).toList();
+
+    List<int> data;
+    try {
+      data = zlib.decode(bytes);
+    } catch (e) {
+      //解压失败,不处理
+      data = bytes;
+    }
+
+    var ans = Answer(cookie: response.cookies, status: response.statusCode);
+    try {
+      Map content = json.decode(decrypt(data));
+      ans = ans.copy(
+        body: content,
+        status: content['code'],
+      );
+    } catch (e) {
+      ans = ans.copy(body: json.decode(utf8.decode(data)));
+    }
+
+    ans = ans.copy(
+        status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
+    return ans;
+  }).catchError((e, s) {
+    debugPrint("request error " + e.toString());
+    debugPrint(s.toString());
+    return Answer(status: 502, body: {'code': 502, 'msg': e.toString()});
+  });
+}
+
+///[crypto] 只支持 [Crypto.linuxapi] 和 [Crypto.weapi]
 Future<Answer> request(
   String method,
   String url,
@@ -48,13 +140,7 @@ Future<Answer> request(
   String ua,
   Crypto crypto = Crypto.weapi,
 }) async {
-  final headers = {'User-Agent': _chooseUserAgent(ua: ua)};
-  if (method.toUpperCase() == 'POST')
-    headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  if (url.contains('music.163.com'))
-    headers['Referer'] = 'https://music.163.com';
-
-  headers['Cookie'] = cookies.join("; ");
+  final headers = _buildHeader(url, ua, method, cookies);
   if (crypto == Crypto.weapi) {
     var csrfToken =
         cookies.firstWhere((c) => c.name == "__csrf", orElse: () => null);
@@ -70,49 +156,8 @@ Future<Answer> request(
     headers['User-Agent'] =
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36';
     url = 'https://music.163.com/api/linux/forward';
-  } else if (crypto == Crypto.eapi) {
-    final cookie = {};
-    var csrfToken;
-    final header = {
-      //系统版本
-      "osver": cookie['osver'],
-      //encrypt.base64.encode(imei + '\t02:00:00:00:00:00\t5106025eb79a5247\t70ffbaac7')
-      "deviceId": cookie['deviceId'],
-      // app版本
-      "appver": cookie['appver'] ?? "6.1.1",
-      //版本号
-      "versioncode": cookie['versioncode'] ?? "140",
-      //设备model
-      "mobilename": cookie['mobilename'],
-      "buildver": cookie['buildver'] ??
-          (DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)),
-      //设备分辨率
-      "resolution": cookie['resolution'] ?? "1920x1080",
-      "__csrf": csrfToken,
-      "os": cookie['os'] ?? 'android',
-      "channel": cookie['channel'],
-      "requestId":
-          '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000).toString().padLeft(4, '0')}'
-    };
-    if (cookie['MUSIC_U'] != null) header["MUSIC_U"] = cookie['MUSIC_U'];
-    if (cookie['MUSIC_A']) header["MUSIC_A"] = cookie['MUSIC_A'];
-    header['Cookie'] = header.keys
-        .map((key) =>
-            '${Uri.encodeComponent(key)}=${Uri.encodeComponent(header[key])}')
-        .join('; ');
-
-    data['header'] = header;
-    data = eapi(url, data);
-    url = url.replaceAll(RegExp(r"\w*api"), 'eapi');
   }
-
-  var answer = Completer<Answer>.sync();
-
-  HttpClient().openUrl(method, Uri.parse(url)).then((request) {
-    headers.forEach(request.headers.add);
-    request.write(Uri(queryParameters: data.cast()).query);
-    return request.close();
-  }).then((response) async {
+  return _doRequest(url, headers, data, method).then((response) async {
     var ans = Answer(cookie: response.cookies);
     final content = await response.transform(utf8.decoder).join();
     final body = json.decode(content);
@@ -122,12 +167,19 @@ Future<Answer> request(
 
     ans = ans.copy(
         status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
-    answer.complete(ans);
-  }).catchError((e, StackTrace s) {
+    return ans;
+  }).catchError((e, s) {
     debugPrint(e.toString());
     debugPrint(s.toString());
-    answer.complete(
-        Answer(status: 502, body: {'code': 502, 'msg': e.toString()}));
+    return Answer(status: 502, body: {'code': 502, 'msg': e.toString()});
   });
-  return answer.future;
+}
+
+Future<HttpClientResponse> _doRequest(
+    String url, Map<String, String> headers, Map data, String method) {
+  return HttpClient().openUrl(method, Uri.parse(url)).then((request) {
+    headers.forEach(request.headers.add);
+    request.write(Uri(queryParameters: data.cast()).query);
+    return request.close();
+  });
 }

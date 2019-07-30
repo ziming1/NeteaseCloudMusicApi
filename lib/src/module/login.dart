@@ -42,3 +42,25 @@ Handler logout = (query, cookie) {
   return request('POST', 'https://music.163.com/weapi/logout', {},
       crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
 };
+
+// 检测手机号码是否已经注册
+Handler cellphone_existence_check = (query, cookie) {
+  final data = {'cellphone': query['phone']};
+  return eapiRequest(
+    'http://music.163.com/eapi/cellphone/existence/check',
+    '/api/cellphone/existence/check',
+    data,
+    cookies: cookie,
+  );
+};
+
+// 检测用户名是否已经注册
+Handler activate_init_profile = (query, cookie) {
+  final data = {'nickname': query['nickname']};
+  return eapiRequest(
+    'http://music.163.com/eapi/activate/initProfile',
+    '/api/activate/initProfile',
+    data,
+    cookies: cookie,
+  );
+};

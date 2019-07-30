@@ -21,6 +21,7 @@ const _eapiKey = 'e82ckenh8dichen8';
 
 final IV _iv = IV.fromUtf8('0102030405060708');
 
+///weApi 加密方式
 Map<String, String> weApi(Map obj) {
   final text = json.encode(obj);
   final secKey = _createdSecretKey();
@@ -33,6 +34,7 @@ Map<String, String> weApi(Map obj) {
   };
 }
 
+///LinuxApi 加密方式
 Map linuxApi(Map obj) {
   final text = json.encode(obj);
   return {
@@ -41,6 +43,7 @@ Map linuxApi(Map obj) {
   };
 }
 
+/// eapi 加密方式
 Map eapi(String url, Map obj) {
   final text = json.encode(obj);
   final message = 'nobody${url}use${text}md5forencrypt';
@@ -52,6 +55,7 @@ Map eapi(String url, Map obj) {
   };
 }
 
+/// eapi 接口返回数据解密
 String decrypt(List<int> buffer) {
   return Encrypter(AES(Key.fromUtf8(_eapiKey), mode: AESMode.ecb))
       .decrypt(Encrypted(buffer));

@@ -19,6 +19,7 @@ Future<HttpServer> startServer({address = "localhost", int port = 3000}) {
       debugPrint("request : ${request.uri}");
       _handleRequest(request);
     });
+    return server;
   });
 }
 
