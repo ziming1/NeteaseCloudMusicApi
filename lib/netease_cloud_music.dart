@@ -7,7 +7,9 @@ import 'src/module.dart';
 
 typedef DebugPrinter = void Function(String message);
 
-typedef QueryParameterDecryptor = Map Function(Map queryParameter);
+typedef QueryParameterDecryptor = Map<String, String> Function(
+  Map<String, String> queryParameter,
+);
 
 DebugPrinter debugPrint = (msg) {
   print(msg);
