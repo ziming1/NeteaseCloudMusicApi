@@ -100,7 +100,7 @@ Future<Answer> eapiRequest(
   url = url.replaceAll(RegExp(r"\w*api"), 'eapi');
 
   return _doRequest(url, headers, data, method).then((response) async {
-    final bytes = await response.expand((e) => e).toList();
+    final bytes = (await response.expand((e) => e).toList()).cast<int>();
 
     List<int> data;
     try {
@@ -159,7 +159,9 @@ Future<Answer> request(
   }
   return _doRequest(url, headers, data, method).then((response) async {
     var ans = Answer(cookie: response.cookies);
-    final content = await response.transform(utf8.decoder).join();
+
+    final content =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
     final body = json.decode(content);
     ans = ans.copy(
         status: int.parse(body['code'].toString()) ?? response.statusCode,
