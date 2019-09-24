@@ -45,7 +45,10 @@ Handler logout = (query, cookie) {
 
 // 检测手机号码是否已经注册
 Handler cellphone_existence_check = (query, cookie) {
-  final data = {'cellphone': query['phone']};
+  final data = {
+    'cellphone': query['phone'],
+    'countrycode': query['countrycode']
+  };
   return eapiRequest(
     'http://music.163.com/eapi/cellphone/existence/check',
     '/api/cellphone/existence/check',
