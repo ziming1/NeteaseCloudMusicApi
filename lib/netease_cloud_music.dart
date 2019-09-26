@@ -20,7 +20,7 @@ Future<HttpServer> startServer({
   int port = 3000,
   QueryParameterDecryptor decryptor,
 }) {
-  return HttpServer.bind(address, port).then((server) {
+  return HttpServer.bind(address, port, shared: true).then((server) {
     debugPrint("start listen at: http://$address:$port");
     server.listen((request) {
       _handleRequest(request, decryptor);
@@ -29,8 +29,7 @@ Future<HttpServer> startServer({
   });
 }
 
-void _handleRequest(
-    HttpRequest request, QueryParameterDecryptor decryptor) async {
+void _handleRequest(HttpRequest request, QueryParameterDecryptor decryptor) async {
   final handle = handles[request.uri.path];
 
   Answer answer;
