@@ -5,6 +5,8 @@ import 'package:netease_music_api/src/answer.dart';
 
 import 'src/module.dart';
 
+export 'src/answer.dart';
+
 typedef DebugPrinter = void Function(String message);
 
 DebugPrinter debugPrint = (msg) {
