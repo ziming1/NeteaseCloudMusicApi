@@ -2,36 +2,31 @@ part of '../module.dart';
 
 //电台banner
 Handler dj_banner = (query, cookie) {
-  return request(
-      'POST', 'http://music.163.com/weapi/djradio/banner/get', const {},
+  return request('POST', 'http://music.163.com/weapi/djradio/banner/get', const {},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 //dj非热门类型
 Handler dj_category_excludehot = (query, cookie) {
-  return request('POST',
-      'http://music.163.com/weapi/djradio/category/excludehot', const {},
+  return request('POST', 'http://music.163.com/weapi/djradio/category/excludehot', const {},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 //dj推荐类型
 Handler dj_category_recommend = (query, cookie) {
-  return request(
-      'POST', 'http://music.163.com/weapi/djradio/category/recommend', const {},
+  return request('POST', 'http://music.163.com/weapi/djradio/category/recommend', const {},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 //电台分类列表
 Handler dj_catelist = (query, cookie) {
-  return request(
-      'POST', 'http://music.163.com/weapi/djradio/category/get', const {},
+  return request('POST', 'http://music.163.com/weapi/djradio/category/get', const {},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 //电台详情
 Handler dj_detail = (query, cookie) {
-  return request(
-      'POST', 'https://music.163.com/weapi/djradio/get', {'id': query['rid']},
+  return request('POST', 'https://music.163.com/weapi/djradio/get', {'id': query['rid']},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
@@ -46,8 +41,7 @@ Handler dj_hot = (query, cookie) {
     'limit': query['limit'],
     'offset': query['offset']
   };
-  return request('POST', 'https://music.163.com/weapi/djradio/hot/v1', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/djradio/hot/v1', data, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 付费电台
@@ -56,16 +50,14 @@ Handler dj_paygift = (query, cookie) {
     'limit': query['limit'] ?? 30,
     ['offset']: query['offset'] ?? 0
   };
-  return request('POST',
-      'https://music.163.com/weapi/djradio/home/paygift/list?_nmclfl=1', data,
+  return request('POST', 'https://music.163.com/weapi/djradio/home/paygift/list?_nmclfl=1', data,
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 电台节目详情
 Handler dj_program_detail = (query, cookie) {
   final data = {'id': query['id']};
-  return request('POST', 'https://music.163.com/weapi/dj/program/detail', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/dj/program/detail', data, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 电台节目列表
@@ -76,8 +68,7 @@ Handler dj_program = (query, cookie) {
     'offset': query['offset'] ?? 0,
     'asc': toBoolean(query['asc'])
   };
-  return request('POST', 'https://music.163.com/weapi/dj/program/byradio', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/dj/program/byradio', data, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 精选电台分类
@@ -106,41 +97,30 @@ Handler dj_program = (query, cookie) {
 */
 Handler dj_recommend_type = (query, cookie) {
   final data = {'cateId': query['type']};
-  return request('POST', 'https://music.163.com/weapi/djradio/recommend', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/djradio/recommend', data, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 精选电台
 Handler dj_recommend = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/djradio/recommend/v1', {},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/djradio/recommend/v1', {}, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 精选电台
 Handler dj_sub = (query, cookie) {
   query['t'] = (query['t'] == 1 ? 'sub' : 'unsub');
-  return request('POST', 'https://music.163.com/weapi/djradio/${query['t']}',
-      {'id': query['rid']},
+  return request('POST', 'https://music.163.com/weapi/djradio/${query['t']}', {'id': query['rid']},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 订阅电台列表
 Handler dj_sublist = (query, cookie) {
-  final data = {
-    'limit': query['limit'] ?? 30,
-    'offset': query['offset'] ?? 0,
-    'total': true
-  };
-  return request('POST', 'https://music.163.com/weapi/djradio/get/subed', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  final data = {'limit': query['limit'] ?? 30, 'offset': query['offset'] ?? 0, 'total': true};
+  return request('POST', 'https://music.163.com/weapi/djradio/get/subed', data, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // dj今日优选
 Handler dj_today_perfered = (query, cookie) {
   final data = {'page': query['page'] ?? 0};
-  return request(
-      'POST', 'http://music.163.com/weapi/djradio/home/today/perfered', data,
+  return request('POST', 'http://music.163.com/weapi/djradio/home/today/perfered', data,
       crypto: Crypto.weapi, cookies: cookie);
 };
-
-

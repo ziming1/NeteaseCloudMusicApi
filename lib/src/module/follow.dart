@@ -4,7 +4,6 @@ part of '../module.dart';
 Handler follow = (query, cookie) {
   cookie.add(Cookie('os', 'pc'));
   query['t'] = (query['t'] == 1 ? 'follow' : 'delfollow');
-  return request('POST',
-      'https://music.163.com/weapi/user/${query['t']}/${query['id']}', {},
+  return request('POST', 'https://music.163.com/weapi/user/${query['t']}/${query['id']}', {},
       crypto: Crypto.weapi, cookies: cookie);
 };

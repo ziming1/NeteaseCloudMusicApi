@@ -7,6 +7,5 @@ Handler batch = (query, cookie) {
       data[key] = query[key];
     }
   });
-  return request('POST', 'http://music.163.com/eapi/batch', data,
-      crypto: Crypto.eapi, cookies: cookie);
+  return request('POST', 'http://music.163.com/eapi/batch', data, crypto: Crypto.eapi, cookies: cookie);
 };

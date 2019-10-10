@@ -16,7 +16,6 @@ Handler resource_like = (query, cookie) {
     data['threadId'] = query['threadId'];
   }
 
-  return request(
-      'POST', 'https://music.163.com/weapi/v1/discovery/recommend/songs', data,
+  return request('POST', 'https://music.163.com/weapi/v1/discovery/recommend/songs', data,
       crypto: Crypto.weapi, cookies: cookie);
 };

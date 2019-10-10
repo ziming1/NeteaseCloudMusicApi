@@ -7,7 +7,6 @@ part of '../module.dart';
     未登录 {'android': {'code': 301}, 'web': {'code': 301}}
 */
 Handler daily_signin = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/point/dailyTask',
-      {"type": query['type'] ?? 0},
+  return request('POST', 'https://music.163.com/weapi/point/dailyTask', {"type": query['type'] ?? 0},
       crypto: Crypto.weapi, cookies: cookie);
 };

@@ -27,8 +27,7 @@ Handler user_cloud_del = (query, cookie) {
 // 云盘数据详情
 Handler user_cloud_detail = (query, cookie) {
   final id = query['id'].toString().replaceAll(' ', "").split(",");
-  return request(
-      'POST', 'https://music.163.com/weapi/v1/cloud/get/byids', {'songIds': id},
+  return request('POST', 'https://music.163.com/weapi/v1/cloud/get/byids', {'songIds': id},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
@@ -47,8 +46,7 @@ Handler user_cloud = (query, cookie) {
 
 // 用户详情
 Handler user_detail = (query, cookie) {
-  return request(
-      'POST', 'https://music.163.com/weapi/v1/user/detail/${query['uid']}', {},
+  return request('POST', 'https://music.163.com/weapi/v1/user/detail/${query['uid']}', {},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
@@ -67,17 +65,9 @@ Handler user_dj = (query, cookie) {
 
 // 用户动态
 Handler user_event = (query, cookie) {
-  return request(
-      'POST',
-      'https://music.163.com/weapi/event/get/${query['uid']}',
-      {
-        'getcounts': true,
-        'limit': query['limit'] ?? 30,
-        'time': query['lasttime'] ?? -1,
-        'total': false
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/event/get/${query['uid']}',
+      {'getcounts': true, 'limit': query['limit'] ?? 30, 'time': query['lasttime'] ?? -1, 'total': false},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 关注TA的人(粉丝)
@@ -96,16 +86,9 @@ Handler user_followeds = (query, cookie) {
 
 // TA关注的人(关注)
 Handler user_follows = (query, cookie) {
-  return request(
-      'POST',
-      'https://music.163.com/weapi/user/getfollows/${query['uid']}',
-      {
-        'limit': query['limit'] ?? 30,
-        'offset': query['offset'] ?? 0,
-        'order': true
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/user/getfollows/${query['uid']}',
+      {'limit': query['limit'] ?? 30, 'offset': query['offset'] ?? 0, 'order': true},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 用户歌单

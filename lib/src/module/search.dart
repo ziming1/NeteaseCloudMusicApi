@@ -2,8 +2,7 @@ part of '../module.dart';
 
 // 热门搜索
 Handler search_hot = (query, cookie) {
-  return request(
-      'POST', 'https://music.163.com/weapi/search/hot', {'type': 1111},
+  return request('POST', 'https://music.163.com/weapi/search/hot', {'type': 1111},
       crypto: Crypto.weapi, cookies: cookie, ua: 'mobile');
 };
 
@@ -23,8 +22,7 @@ Handler search_multimatch = (query, cookie) {
 // 搜索建议
 Handler search_suggest = (query, cookie) {
   final type = query['type'] == 'mobile' ? 'keyword' : 'web';
-  return request('POST', 'https://music.163.com/weapi/search/suggest/$type',
-      {'s': query['keywords'] ?? ''},
+  return request('POST', 'https://music.163.com/weapi/search/suggest/$type', {'s': query['keywords'] ?? ''},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
@@ -38,6 +36,5 @@ Handler search = (query, cookie) {
     'limit': query['limit'] ?? 30,
     'offset': query['offset'] ?? 0
   };
-  return request('POST', 'https://music.163.com/weapi/search/get', data,
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/search/get', data, crypto: Crypto.weapi, cookies: cookie);
 };

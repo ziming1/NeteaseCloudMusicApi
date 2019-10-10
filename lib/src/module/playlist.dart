@@ -2,8 +2,7 @@ part of '../module.dart';
 
 // 全部歌单分类
 Handler playlist_catlist = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/playlist/catalogue', {},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/playlist/catalogue', {}, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 创建歌单
@@ -37,8 +36,7 @@ Handler playlist_detail = (query, cookie) {
 
 // 热门歌单分类
 Handler playlist_hot = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/playlist/hottags', {},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/playlist/hottags', {}, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 收藏与取消收藏歌单
@@ -56,16 +54,9 @@ Handler playlist_subscribe = (query, cookie) {
 
 // 歌单收藏者
 Handler playlist_subscribers = (query, cookie) {
-  return request(
-      'POST',
-      'https://music.163.com/weapi/playlist/subscribers',
-      {
-        'id': query['id'],
-        'limit': query['limit'] ?? 20,
-        'offset': query['offset'] ?? 0
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/playlist/subscribers',
+      {'id': query['id'], 'limit': query['limit'] ?? 20, 'offset': query['offset'] ?? 0},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 收藏单曲到歌单 从歌单删除歌曲

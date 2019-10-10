@@ -2,15 +2,9 @@ part of '../module.dart';
 
 // 相关视频
 Handler related_allvideo = (query, cookie) {
-  return request(
-      'GET',
-      'https://music.163.com/weapi/v1/discovery/recommend/songs',
-      {
-        'id': query['id'],
-        'type': ((RegExp(r'^\d+$')).hasMatch(query['id'])) ? 0 : 1
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('GET', 'https://music.163.com/weapi/v1/discovery/recommend/songs',
+      {'id': query['id'], 'type': ((RegExp(r'^\d+$')).hasMatch(query['id'])) ? 0 : 1},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 相关歌单

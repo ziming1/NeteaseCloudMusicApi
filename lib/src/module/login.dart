@@ -6,8 +6,7 @@ Handler login_cellphone = (query, cookie) {
   final data = {
     'phone': query['phone'],
     'countrycode': query['countrycode'],
-    'password':
-        Encrypted(md5.convert(utf8.encode(query['password'])).bytes).base16,
+    'password': Encrypted(md5.convert(utf8.encode(query['password'])).bytes).base16,
     'rememberLogin': 'true'
   };
 
@@ -28,27 +27,21 @@ Handler login = (query, cookie) {
   cookie.add(Cookie('os', 'pc'));
   final data = {
     'username': query['email'],
-    'password':
-        Encrypted(md5.convert(utf8.encode(query['password'])).bytes).base16,
+    'password': Encrypted(md5.convert(utf8.encode(query['password'])).bytes).base16,
     'rememberLogin': 'true'
   };
 
-  return request('POST', 'https://music.163.com/weapi/login', data,
-      crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
+  return request('POST', 'https://music.163.com/weapi/login', data, crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
 };
 
 // 退出登录
 Handler logout = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/logout', {},
-      crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
+  return request('POST', 'https://music.163.com/weapi/logout', {}, crypto: Crypto.weapi, cookies: cookie, ua: 'pc');
 };
 
 // 检测手机号码是否已经注册
 Handler cellphone_existence_check = (query, cookie) {
-  final data = {
-    'cellphone': query['phone'],
-    'countrycode': query['countrycode']
-  };
+  final data = {'cellphone': query['phone'], 'countrycode': query['countrycode']};
   return eapiRequest(
     'http://music.163.com/eapi/cellphone/existence/check',
     '/api/cellphone/existence/check',

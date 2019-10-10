@@ -18,12 +18,7 @@ Handler video_group = (query, cookie) {
   return request(
     'POST',
     'https://music.163.com/weapi/videotimeline/videogroup/get',
-    {
-      'groupId': query['id'],
-      'offset': query['offset'] ?? 0,
-      'needUrl': true,
-      'resolution': query['res'] ?? 1080
-    },
+    {'groupId': query['id'], 'offset': query['offset'] ?? 0, 'needUrl': true, 'resolution': query['res'] ?? 1080},
     crypto: Crypto.weapi,
     cookies: cookie,
   );

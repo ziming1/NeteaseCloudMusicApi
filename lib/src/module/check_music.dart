@@ -6,8 +6,7 @@ Handler check_music = (query, cookie) {
     'ids': '[${query['id']}]',
     'br': int.parse(query['br'] ?? 999000),
   };
-  return request(
-          'POST', 'https://music.163.com/weapi/song/enhance/player/url', data,
+  return request('POST', 'https://music.163.com/weapi/song/enhance/player/url', data,
           crypto: Crypto.weapi, cookies: cookie)
       .then((response) {
     var playable = false;
@@ -20,8 +19,7 @@ Handler check_music = (query, cookie) {
       response = response.copy(body: {'success': true, 'message': 'ok'});
       return response;
     } else {
-      return response
-          .copy(status: 404, body: {'success': false, 'message': '亲爱的,暂无版权'});
+      return response.copy(status: 404, body: {'success': false, 'message': '亲爱的,暂无版权'});
     }
   });
 };

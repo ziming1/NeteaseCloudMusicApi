@@ -17,16 +17,9 @@ Handler top_album = (query, cookie) {
 
 // 热门歌手
 Handler top_artists = (query, cookie) {
-  return request(
-      'POST',
-      'https://music.163.com/weapi/artist/top',
-      {
-        'limit': query['limit'] ?? 50,
-        'offset': query['offset'] ?? 0,
-        'total': true
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/artist/top',
+      {'limit': query['limit'] ?? 50, 'offset': query['offset'] ?? 0, 'total': true},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 const topList = {
@@ -58,23 +51,15 @@ const topList = {
 
 // 排行榜
 Handler top_list = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/v3/playlist/detail',
-      {'id': topList[query['idx']], 'n': 10000},
+  return request('POST', 'https://music.163.com/weapi/v3/playlist/detail', {'id': topList[query['idx']], 'n': 10000},
       crypto: Crypto.linuxapi, cookies: cookie);
 };
 
 // MV排行榜
 Handler top_mv = (query, cookie) {
-  return request(
-      'POST',
-      'https://music.163.com/weapi/mv/toplist',
-      {
-        'limit': query['limit'] ?? 50,
-        'offset': query['offset'] ?? 0,
-        'total': true
-      },
-      crypto: Crypto.weapi,
-      cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/mv/toplist',
+      {'limit': query['limit'] ?? 50, 'offset': query['offset'] ?? 0, 'total': true},
+      crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 精品歌单
@@ -126,19 +111,17 @@ Handler top_song = (query, cookie) {
 
 // 歌手榜
 Handler toplist_artist = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/toplist/artist',
-      {'type': 1, 'limit': 100, 'offset': 0, 'total': true},
+  return request(
+      'POST', 'https://music.163.com/weapi/toplist/artist', {'type': 1, 'limit': 100, 'offset': 0, 'total': true},
       crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 所有榜单内容摘要
 Handler toplist_detail = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/toplist/detail', {},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/toplist/detail', {}, crypto: Crypto.weapi, cookies: cookie);
 };
 
 // 所有榜单介绍
 Handler toplist = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/toplist', {},
-      crypto: Crypto.linuxapi, cookies: cookie);
+  return request('POST', 'https://music.163.com/weapi/toplist', {}, crypto: Crypto.linuxapi, cookies: cookie);
 };
