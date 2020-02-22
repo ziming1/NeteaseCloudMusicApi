@@ -28,7 +28,7 @@ Handler song_url = (query, cookie) {
       return buffer.toString();
     }
 
-    cookie.add(Cookie('_ntes_nuid', _createdSecretKey()));
+    cookie = List.from(cookie)..add(Cookie('_ntes_nuid', _createdSecretKey()));
   }
 
   return request(
