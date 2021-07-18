@@ -4,12 +4,14 @@ const _keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 // 歌曲详情
 Handler song_detail = (query, cookie) {
-  query['ids'] = query['ids'].toString().split(RegExp(r'\s*,\s*'));
+  query!['ids'] = query['ids'].toString().split(RegExp(r'\s*,\s*'));
   return request(
       'POST',
       'https://music.163.com/weapi/v3/song/detail',
       {
-        'c': '[' + query['ids'].map((id) => ('{"id":' + id + '}')).join(',') + ']',
+        'c': '[' +
+            query['ids'].map((id) => ('{"id":' + id + '}')).join(',') +
+            ']',
         'ids': '[' + query['ids'].join(',') + ']'
       },
       crypto: Crypto.weapi,
@@ -35,7 +37,7 @@ Handler song_url = (query, cookie) {
       'POST',
       'https://music.163.com/weapi/song/enhance/player/url',
       {
-        'ids': '[${query['id']}]',
+        'ids': '[${query!['id']}]',
         'br': int.parse(query['br'] ?? '999000'),
       },
       crypto: Crypto.weapi,

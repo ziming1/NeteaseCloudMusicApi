@@ -17,12 +17,15 @@ DebugPrinter debugPrint = (msg) {
 /// API文档地址参考: https://binaryify.github.io/NeteaseCloudMusicApi/#/
 Future<Answer> cloudMusicApi(
   String path, {
-  Map parameter,
+  Map? parameter,
   List<Cookie> cookie = const [],
 }) async {
-  assert(path != null, "path can not be null");
   assert(handles.containsKey(path), "此 api url 未被定义, 请检查: $path ");
-  final Handler handle = handles[path];
+  final handle = handles[path];
+
+  if (handle == null) {
+    throw HttpException('404 not found');
+  }
 
   try {
     final answer = await handle(parameter, cookie);

@@ -3,7 +3,7 @@ part of '../module.dart';
 // 红心与取消红心歌曲
 Handler like = (query, cookie) {
   final data = {
-    'trackId': query['id'],
+    'trackId': query!['id'],
     'like': query['like'] == 'false' ? false : true,
   };
   return request(
@@ -16,6 +16,7 @@ Handler like = (query, cookie) {
 
 // 喜欢的歌曲(无序)
 Handler likelist = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/song/like/get', {"uid": query['uid']},
+  return request('POST', 'https://music.163.com/weapi/song/like/get',
+      {"uid": query!['uid']},
       crypto: Crypto.weapi, cookies: cookie);
 };

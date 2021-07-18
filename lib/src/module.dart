@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
@@ -44,7 +45,7 @@ part 'module/user.dart';
 part 'module/video.dart';
 part 'module/weblog.dart';
 
-typedef Handler = Future<Answer> Function(Map query, List<Cookie> cookie);
+typedef Handler = Future<Answer> Function(Map? query, List<Cookie> cookie);
 
 final handles = <String, Handler>{
   "/album/newest": album_newest,
