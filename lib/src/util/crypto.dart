@@ -38,8 +38,9 @@ Map<String, String> weApi(Map obj) {
 Map linuxApi(Map obj) {
   final text = json.encode(obj);
   return {
-    "eparams":
-        _aesEncrypt(text, AESMode.ecb, _linuxApiKey, null).base16.toUpperCase()
+    "eparams": _aesEncrypt(text, AESMode.ecb, _linuxApiKey, IV.fromUtf8(''))
+        .base16
+        .toUpperCase(),
   };
 }
 
@@ -50,8 +51,9 @@ Map eapi(String url, Map obj) {
   final digest = md5.convert(utf8.encode(message));
   final data = '${url}-36cd479b6b5-${text}-36cd479b6b5-${digest}';
   return {
-    'params':
-        _aesEncrypt(data, AESMode.ecb, _eapiKey, null).base16.toUpperCase()
+    'params': _aesEncrypt(data, AESMode.ecb, _eapiKey, IV.fromUtf8(''))
+        .base16
+        .toUpperCase()
   };
 }
 
@@ -70,7 +72,7 @@ String _createdSecretKey({int size = 16}) {
   return buffer.toString();
 }
 
-Encrypted _aesEncrypt(String text, AESMode mode, String key, IV? iv) {
+Encrypted _aesEncrypt(String text, AESMode mode, String key, IV iv) {
   final encrypt =
       Encrypter(AES(Key.fromUtf8(key), mode: mode, padding: "PKCS7"));
   return encrypt.encrypt(text, iv: iv);
