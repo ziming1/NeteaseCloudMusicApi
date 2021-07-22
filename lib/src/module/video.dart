@@ -6,7 +6,7 @@ Handler video_detail = (query, cookie) {
     'POST',
     'https://music.163.com/weapi/cloudvideo/v1/video/detail',
     {
-      'id': query['id'],
+      'id': query!['id'],
     },
     crypto: Crypto.weapi,
     cookies: cookie,
@@ -18,7 +18,12 @@ Handler video_group = (query, cookie) {
   return request(
     'POST',
     'https://music.163.com/weapi/videotimeline/videogroup/get',
-    {'groupId': query['id'], 'offset': query['offset'] ?? 0, 'needUrl': true, 'resolution': query['res'] ?? 1080},
+    {
+      'groupId': query!['id'],
+      'offset': query['offset'] ?? 0,
+      'needUrl': true,
+      'resolution': query['res'] ?? 1080
+    },
     crypto: Crypto.weapi,
     cookies: cookie,
   );
@@ -26,7 +31,7 @@ Handler video_group = (query, cookie) {
 
 // 收藏与取消收藏视频
 Handler video_sub = (query, cookie) {
-  query['t'] = (query['t'] == 1 ? 'sub' : 'unsub');
+  query!['t'] = (query['t'] == 1 ? 'sub' : 'unsub');
   return request(
     'POST',
     'https://music.163.com/weapi/cloudvideo/video/${query['t']}',
@@ -44,7 +49,7 @@ Handler video_url = (query, cookie) {
     'POST',
     'https://music.163.com/weapi/cloudvideo/playurl',
     {
-      'ids': '["' + query['id'] + '"]',
+      'ids': '["' + query!['id'] + '"]',
       'resolution': query['res'] ?? 1080,
     },
     crypto: Crypto.weapi,

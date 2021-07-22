@@ -6,7 +6,7 @@ Handler digitalAlbum_purchased = (query, cookie) {
       'POST',
       'https://music.163.com/api/digitalAlbum/purchased',
       {
-        'limit': query['limit'] ?? 30,
+        'limit': query!['limit'] ?? 30,
         'offset': query['offset'] ?? 0,
         'total': true,
       },

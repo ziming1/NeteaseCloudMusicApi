@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:meta/meta.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
-
-import 'package:crypto/crypto.dart';
 
 const _keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -27,7 +27,9 @@ Map<String, String> weApi(Map obj) {
   final secKey = _createdSecretKey();
   final mode = AESMode.cbc;
   return {
-    "params": _aesEncrypt(_aesEncrypt(text, mode, _presetKey, _iv).base64, mode, secKey, _iv).base64,
+    "params": _aesEncrypt(
+            _aesEncrypt(text, mode, _presetKey, _iv).base64, mode, secKey, _iv)
+        .base64,
     "encSecKey": rsaEncrypt(_reverse(secKey), publicKey).base16
   };
 }
@@ -35,7 +37,11 @@ Map<String, String> weApi(Map obj) {
 ///LinuxApi 加密方式
 Map linuxApi(Map obj) {
   final text = json.encode(obj);
-  return {"eparams": _aesEncrypt(text, AESMode.ecb, _linuxApiKey, null).base16.toUpperCase()};
+  return {
+    "eparams": _aesEncrypt(text, AESMode.ecb, _linuxApiKey, IV.fromUtf8(''))
+        .base16
+        .toUpperCase(),
+  };
 }
 
 /// eapi 加密方式
@@ -44,12 +50,17 @@ Map eapi(String url, Map obj) {
   final message = 'nobody${url}use${text}md5forencrypt';
   final digest = md5.convert(utf8.encode(message));
   final data = '${url}-36cd479b6b5-${text}-36cd479b6b5-${digest}';
-  return {'params': _aesEncrypt(data, AESMode.ecb, _eapiKey, null).base16.toUpperCase()};
+  return {
+    'params': _aesEncrypt(data, AESMode.ecb, _eapiKey, IV.fromUtf8(''))
+        .base16
+        .toUpperCase()
+  };
 }
 
 /// eapi 接口返回数据解密
 String decrypt(List<int> buffer) {
-  return Encrypter(AES(Key.fromUtf8(_eapiKey), mode: AESMode.ecb)).decrypt(Encrypted(buffer));
+  return Encrypter(AES(Key.fromUtf8(_eapiKey), mode: AESMode.ecb))
+      .decrypt(Encrypted(Uint8List.fromList(buffer)));
 }
 
 String _createdSecretKey({int size = 16}) {
@@ -62,17 +73,18 @@ String _createdSecretKey({int size = 16}) {
 }
 
 Encrypted _aesEncrypt(String text, AESMode mode, String key, IV iv) {
-  final encrypt = Encrypter(AES(Key.fromUtf8(key), mode: mode, padding: "PKCS7"));
+  final encrypt =
+      Encrypter(AES(Key.fromUtf8(key), mode: mode, padding: "PKCS7"));
   return encrypt.encrypt(text, iv: iv);
 }
 
 ///rsa encrypt with NO_PADDING
 @visibleForTesting
 Encrypted rsaEncrypt(String text, String key) {
-  RSAPublicKey pubKey = RSAKeyParser().parse(key);
+  RSAPublicKey pubKey = RSAKeyParser().parse(key) as RSAPublicKey;
   final rsa = RSAEngine();
   rsa.init(true, PublicKeyParameter<RSAPublicKey>(pubKey));
-  final encrypted = rsa.process(utf8.encode(text));
+  final encrypted = rsa.process(utf8.encode(text) as Uint8List);
   return Encrypted(encrypted);
 }
 

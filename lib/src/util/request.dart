@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:netease_music_api/netease_cloud_music.dart';
 import 'package:netease_music_api/src/answer.dart';
 
@@ -10,7 +11,7 @@ import 'crypto.dart';
 
 enum Crypto { linuxapi, weapi, eapi }
 
-String _chooseUserAgent({String ua}) {
+String _chooseUserAgent({String? ua}) {
   const userAgentList = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
     'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
@@ -40,10 +41,13 @@ String _chooseUserAgent({String ua}) {
   return userAgentList[index];
 }
 
-Map<String, String> _buildHeader(String url, String ua, String method, List<Cookie> cookies) {
+Map<String, String> _buildHeader(
+    String url, String? ua, String method, List<Cookie> cookies) {
   final headers = {'User-Agent': _chooseUserAgent(ua: ua)};
-  if (method.toUpperCase() == 'POST') headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  if (url.contains('music.163.com')) headers['Referer'] = 'https://music.163.com';
+  if (method.toUpperCase() == 'POST')
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  if (url.contains('music.163.com'))
+    headers['Referer'] = 'https://music.163.com';
   headers['Cookie'] = cookies.join("; ");
   return headers;
 }
@@ -53,7 +57,7 @@ Future<Answer> eapiRequest(
   String optionUrl,
   Map data, {
   List<Cookie> cookies = const [],
-  String ua,
+  String? ua,
   String method = 'POST',
 }) {
   final headers = _buildHeader(url, ua, method, cookies);
@@ -75,18 +79,22 @@ Future<Answer> eapiRequest(
     "versioncode": cookie['versioncode'] ?? "140",
     //设备model
     "mobilename": cookie['mobilename'],
-    "buildver": cookie['buildver'] ?? (DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)),
+    "buildver": cookie['buildver'] ??
+        (DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)),
     //设备分辨率
     "resolution": cookie['resolution'] ?? "1920x1080",
     "__csrf": csrfToken,
     "os": cookie['os'] ?? 'android',
     "channel": cookie['channel'],
-    "requestId": '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000).toString().padLeft(4, '0')}'
+    "requestId":
+        '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000).toString().padLeft(4, '0')}'
   };
   if (cookie['MUSIC_U'] != null) header["MUSIC_U"] = cookie['MUSIC_U'];
   if (cookie['MUSIC_A'] != null) header["MUSIC_A"] = cookie['MUSIC_A'];
-  headers['Cookie'] =
-      header.keys.map((key) => '${Uri.encodeComponent(key)}=${Uri.encodeComponent(header[key] ?? '')}').join('; ');
+  headers['Cookie'] = header.keys
+      .map((key) =>
+          '${Uri.encodeComponent(key)}=${Uri.encodeComponent(header[key] ?? '')}')
+      .join('; ');
 
   data['header'] = header;
   data = eapi(optionUrl, data);
@@ -114,7 +122,8 @@ Future<Answer> eapiRequest(
       ans = ans.copy(body: json.decode(utf8.decode(data)));
     }
 
-    ans = ans.copy(status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
+    ans = ans.copy(
+        status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
     return ans;
   }).catchError((e, s) {
     debugPrint("request error " + e.toString());
@@ -129,12 +138,12 @@ Future<Answer> request(
   String url,
   Map data, {
   List<Cookie> cookies = const [],
-  String ua,
+  String? ua,
   Crypto crypto = Crypto.weapi,
 }) async {
   final headers = _buildHeader(url, ua, method, cookies);
   if (crypto == Crypto.weapi) {
-    var csrfToken = cookies.firstWhere((c) => c.name == "__csrf", orElse: () => null);
+    var csrfToken = cookies.firstWhereOrNull((c) => c.name == "__csrf");
     data["csrf_token"] = csrfToken?.value ?? "";
     data = weApi(data);
     url = url.replaceAll(RegExp(r"\w*api"), 'weapi');
@@ -151,11 +160,15 @@ Future<Answer> request(
   return _doRequest(url, headers, data, method).then((response) async {
     var ans = Answer(cookie: response.cookies);
 
-    final content = await response.cast<List<int>>().transform(utf8.decoder).join();
+    final content =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
     final body = json.decode(content);
-    ans = ans.copy(status: int.parse(body['code'].toString()) ?? response.statusCode, body: body);
+    ans = ans.copy(
+        status: int.tryParse(body['code'].toString()) ?? response.statusCode,
+        body: body);
 
-    ans = ans.copy(status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
+    ans = ans.copy(
+        status: ans.status > 100 && ans.status < 600 ? ans.status : 400);
     return ans;
   }).catchError((e, s) {
     debugPrint(e.toString());
@@ -164,7 +177,8 @@ Future<Answer> request(
   });
 }
 
-Future<HttpClientResponse> _doRequest(String url, Map<String, String> headers, Map data, String method) {
+Future<HttpClientResponse> _doRequest(
+    String url, Map<String, String> headers, Map data, String method) {
   return HttpClient().openUrl(method, Uri.parse(url)).then((request) {
     headers.forEach(request.headers.add);
     request.write(Uri(queryParameters: data.cast()).query);

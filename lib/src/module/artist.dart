@@ -1,15 +1,22 @@
 part of '../module.dart';
 
 //歌手专辑
-Handler artist_album = (Map query, List<Cookie> cookie) {
-  return request('POST', "https://music.163.com/weapi/artist/albums/${query['id']}",
-      {'limit': query['limit'] ?? 30, 'offset': query['offset'] ?? 0, 'total': true},
-      cookies: cookie, crypto: Crypto.weapi);
+Handler artist_album = (Map? query, List<Cookie> cookie) {
+  return request(
+      'POST',
+      "https://music.163.com/weapi/artist/albums/${query!['id']}",
+      {
+        'limit': query['limit'] ?? 30,
+        'offset': query['offset'] ?? 0,
+        'total': true
+      },
+      cookies: cookie,
+      crypto: Crypto.weapi);
 };
 
 //歌手介绍
-Handler artist_desc = (query, cookie) => request(
-    'POST', 'https://music.163.com/weapi/artist/introduction', {'id': query['id']},
+Handler artist_desc = (query, cookie) => request('POST',
+    'https://music.163.com/weapi/artist/introduction', {'id': query!['id']},
     crypto: Crypto.weapi, cookies: cookie);
 
 //歌手分类
@@ -34,13 +41,14 @@ Handler artist_desc = (query, cookie) => request(
 
     initial 取值 a-z/A-Z
 */
-Handler artist_list = (Map query, List<Cookie> cookie) {
+Handler artist_list = (Map? query, List<Cookie> cookie) {
   return request(
       'POST',
       'https://music.163.com/weapi/artist/list',
       {
-        'categoryCode': query['cat'] ?? '1001',
-        'initial': (query['initial'] as String)?.toUpperCase()?.codeUnitAt(0) ?? '',
+        'categoryCode': query!['cat'] ?? '1001',
+        'initial':
+            (query['initial'] as String?)?.toUpperCase().codeUnitAt(0) ?? '',
         'offset': query['offset'] ?? 0,
         'limit': query['limit'] ?? 30,
         'total': true
@@ -50,13 +58,21 @@ Handler artist_list = (Map query, List<Cookie> cookie) {
 };
 
 //歌手相关MV
-Handler artist_mv = (query, cookie) => request('POST', 'https://music.163.com/weapi/artist/mvs',
-    {'artistId': query['id'], 'limit': query['limit'], 'offset': query['offset'], 'total': true},
-    crypto: Crypto.weapi, cookies: cookie);
+Handler artist_mv = (query, cookie) => request(
+    'POST',
+    'https://music.163.com/weapi/artist/mvs',
+    {
+      'artistId': query!['id'],
+      'limit': query['limit'],
+      'offset': query['offset'],
+      'total': true
+    },
+    crypto: Crypto.weapi,
+    cookies: cookie);
 
 //收藏与取消收藏歌手
 Handler artist_sub = (query, cookie) {
-  query['t'] = (query['t'] == 1) ? 'sub' : 'unsub';
+  query!['t'] = (query['t'] == 1) ? 'sub' : 'unsub';
   return request('POST', 'https://music.163.com/weapi/artist/${query['t']}',
       {'artistId': query['id'], 'artistIds': '[${query['id']}]'},
       crypto: Crypto.weapi, cookies: cookie);
@@ -64,11 +80,19 @@ Handler artist_sub = (query, cookie) {
 
 //关注歌手列表
 Handler artist_sublist = (query, cookie) {
-  return request('POST', 'https://music.163.com/weapi/artist/sublist',
-      {'limit': query['limit'] ?? 25, 'offset': query['offset'] ?? 0, 'total': true},
-      crypto: Crypto.weapi, cookies: cookie);
+  return request(
+      'POST',
+      'https://music.163.com/weapi/artist/sublist',
+      {
+        'limit': query!['limit'] ?? 25,
+        'offset': query['offset'] ?? 0,
+        'total': true
+      },
+      crypto: Crypto.weapi,
+      cookies: cookie);
 };
 
 //歌手单曲
-Handler artists = (query, cookie) =>
-    request('POST', 'https://music.163.com/weapi/v1/artist/${query['id']}', {}, crypto: Crypto.weapi, cookies: cookie);
+Handler artists = (query, cookie) => request(
+    'POST', 'https://music.163.com/weapi/v1/artist/${query!['id']}', {},
+    crypto: Crypto.weapi, cookies: cookie);
